@@ -1,0 +1,57 @@
+name: Dispatch
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  validate:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Validate JSON and YAML
+      id: json-yaml-validate
+      uses: GrantBirki/json-yaml-validate@v3
+      with:
+        use_gitignore: false
+
+    - name: Validate Resource
+      id: resource-validate
+      run: python ./scripts/resource_validator.py ./local-files/resource
+
+    - name: Send Notification to Discord
+      uses: sarisia/actions-status-discord@v1
+      if: failure()
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+        status: ${{ job.status }}
+        title: "Validate"
+
+  dispatch:
+
+    runs-on: ubuntu-latest
+
+    needs: validate
+
+    steps:
+    - name: Dispatch Update Submodule to gakuen-imas-localify-zh-TW
+      uses: peter-evans/repository-dispatch@v3
+      with:
+        token: ${{ secrets.PAT }}
+        repository: yotv2000tw/gakuen-imas-localify-zh-TW
+        event-type: update-submodule
+
+    - name: Send Notification to Discord
+      uses: sarisia/actions-status-discord@v1
+      if: always()
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+        status: ${{ job.status }}
+        title: "Dispatch"
