@@ -57,7 +57,7 @@ if __name__ == "__main__":
     pretranslation_folder = "./GakumasPreTranslation"
     resource_folder = "./local-files/resource"
     merge_translation_files(raw_folder, translation_folder, pretranslation_folder, resource_folder)
-    shutil.copy(
-        f"{pretranslation_folder}/etc/localization.json",
-        f"./local-files/localization.json",
-    )
+    #shutil.copy(
+    #    f"{pretranslation_folder}/etc/localization.json",
+    #    f"./local-files/localization.json",
+    #)
