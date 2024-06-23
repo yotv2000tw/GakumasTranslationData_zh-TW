@@ -1,6 +1,0 @@
-[submodule "GakumasPreTranslation"]
-	path = GakumasPreTranslation
-	url = https://github.com/yotv2000tw/GakumasPreTranslation.git
-[submodule "gakuen-adapted-translation-data"]
-	path = gakuen-adapted-translation-data
-	url = https://github.com/yotv2000tw/gakuen-adapted-translation-data.git
