@@ -12,17 +12,17 @@ jobs:
             pull-requests: write
 
         steps:
-            - name: Write branch and commit info
-              run: |
-                branch=$(git rev-parse --abbrev-ref HEAD)
-                hash=$(git rev-parse --short=8 HEAD)
-                echo "$branch.$hash" > version.txt
-            
             - name: Checkout Repository
               uses: actions/checkout@v4
               with:
                 token: ${{ secrets.PAT }}
                 submodules: recursive
+                
+            - name: Write branch and commit info
+              run: |
+                branch=$(git rev-parse --abbrev-ref HEAD)
+                hash=$(git rev-parse --short=8 HEAD)
+                echo "$branch.$hash" > version.txt
       
             - name: Authorize Git
               run: |
