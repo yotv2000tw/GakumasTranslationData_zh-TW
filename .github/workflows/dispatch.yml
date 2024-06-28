@@ -7,6 +7,37 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Validate JSON and YAML
+      id: json-yaml-validate
+      uses: GrantBirki/json-yaml-validate@v3
+      with:
+        use_gitignore: false
+
+    - name: Validate Resource
+      id: resource-validate
+      run: python ./scripts/resource_validator.py ./local-files/resource
+
+    - name: Send Notification to Discord
+      uses: sarisia/actions-status-discord@v1
+      if: failure()
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+        status: ${{ job.status }}
+        title: "Validate"
+  
+  version_change:
+
+    runs-on: ubuntu-latest
+
     permissions:
       contents: write
       pull-requests: write
@@ -38,29 +69,6 @@ jobs:
         git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }}
-
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-
-    - name: Validate JSON and YAML
-      id: json-yaml-validate
-      uses: GrantBirki/json-yaml-validate@v3
-      with:
-        use_gitignore: false
-
-    - name: Validate Resource
-      id: resource-validate
-      run: python ./scripts/resource_validator.py ./local-files/resource
-
-    - name: Send Notification to Discord
-      uses: sarisia/actions-status-discord@v1
-      if: failure()
-      with:
-        webhook: ${{ secrets.DISCORD_WEBHOOK }}
-        status: ${{ job.status }}
-        title: "Validate"
 
   dispatch:
 
