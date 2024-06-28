@@ -1,6 +1,6 @@
 name: version_change
 
-on: [workflow_dispatch]
+on: [push,workflow_dispatch]
 
 jobs:
     version_check:
@@ -17,7 +17,7 @@ jobs:
               with:
                 token: ${{ secrets.PAT }}
                 submodules: recursive
-                
+
             - name: Write branch and commit info
               run: |
                 branch=$(git rev-parse --abbrev-ref HEAD)
@@ -37,7 +37,7 @@ jobs:
       
             - name: Commit Changes
               run: |
-                git commit -am "chore(submodule): Update Translation Data"
+                git commit -am "chore(submodule): Update Translation Version"
                 git push origin main
               env:
                 GITHUB_TOKEN: ${{ secrets.PAT }}
