@@ -2,5 +2,6 @@
 /local-files/localization_orig.json
 raw/*
 raw
+compare/
 /local-files/MO-UDShinGo-SC-Gb4-M.otf
 *.pyc
