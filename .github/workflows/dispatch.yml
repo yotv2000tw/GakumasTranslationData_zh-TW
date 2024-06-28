@@ -7,9 +7,37 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+      pull-requests: write
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+
+    - name: Write branch and commit info
+      run: |
+        branch=$(git rev-parse --abbrev-ref HEAD)
+        hash=$(git rev-parse --short=8 HEAD)
+        echo "$branch.$hash" > version.txt
+
+    - name: Authorize Git
+      run: |
+        git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
+        git config --global user.name "$GITHUB_ACTOR"
+
+    - name: Update Submodule
+      run: |
+        git submodule update  --init --recursive --remote -f
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT }}
+
+    - name: Commit Changes
+      run: |
+        git commit -am "chore(submodule): Update Translation Version"
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT }}
 
     - name: Setup Python
       uses: actions/setup-python@v5
